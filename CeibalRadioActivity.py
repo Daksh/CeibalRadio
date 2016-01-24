@@ -19,34 +19,56 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-from sugar.activity import activity
+from sugar3.activity import activity
+from sugar3.graphics.toolbarbox import ToolbarBox
+from sugar3.activity.widgets import ActivityButton
+from sugar3.activity.widgets import TitleEntry
+from sugar3.activity.widgets import StopButton
 
-import gtk
-import pygtk
-pygtk.require("2.0")
+from gi.repository import Gtk
 
-from VistaReproductor import VistaReproductor
+failure = False
+try:
+    from VistaReproductor import VistaReproductor
+except:
+    failure = True
 
 class CeibalRadioActivity(activity.Activity):
 
-	def __init__(self,handle):
+    def __init__(self,handle):
 
-		activity.Activity.__init__(self,handle,False)
+        activity.Activity.__init__(self,handle,False)
 
-		self.set_title("Ceibal_Radio")
+        self.set_title("Ceibal_Radio")
 
-	        self.celeste1  = gtk.gdk.Color(0, 42000, 42000, 1)
+        barraprincipal = ToolbarBox(self)
 
-		barraprincipal = activity.ActivityToolbox(self)
+        activity_button = ActivityButton(self)
+        barraprincipal.toolbar.insert(activity_button, 0)
+        activity_button.show()
 
-		# Vista Reproductor
-		vistareproductor = VistaReproductor()
-		#etiquetareproductor = gtk.Label("Mi Música")
+        title_entry = TitleEntry(self)
+        barraprincipal.toolbar.insert(title_entry, -1)
+        title_entry.show()
+        
+        separator = Gtk.SeparatorToolItem()
+        separator.props.draw = False
+        separator.set_expand(True)
+        barraprincipal.toolbar.insert(separator, -1)
+        separator.show()
 
-		self.set_toolbox(barraprincipal)
-		self.set_canvas(vistareproductor)
-		#self.set_tray(barradestado,gtk.POS_BOTTOM)
+        stop_button = StopButton(self)
+        barraprincipal.toolbar.insert(stop_button, -1)
+        stop_button.show()
 
-		self.show_all()
+        self.set_toolbar_box(barraprincipal)
+        if not failure:
+            vistareproductor = VistaReproductor()
+            self.set_canvas(vistareproductor)
+        else:
+            error = Gtk.Label("Sorry, this activity doesn't work on this computer.")
+            self.set_canvas(error)
+
+        self.show_all()
 
 

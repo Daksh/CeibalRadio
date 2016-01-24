@@ -19,11 +19,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import sys, os, gtk, gobject
+import sys, os
+from gi.repository import Gtk
+from gi.repository import GObject
 import time
 import datetime
 
-from sugar.activity import activity
+from sugar3.activity import activity
 
 #os.environ["HELIX_LIBS"] = activity.get_bundle_path() + "/helix"
 os.environ["HELIX_LIBS"] = os.getcwd() + "/helix"
@@ -53,7 +55,7 @@ class Reproductor():
 		self.buffering = 0
 		
 		self.barradereproduccion = None
-		self.mantener_reproduccion_en_radio = gobject.timeout_add(1000, self.mantener_reproduccion)
+		self.mantener_reproduccion_en_radio = GObject.timeout_add(1000, self.mantener_reproduccion)
 
 	def idle_function(self):
 	# mientras se reproduce, captura eventos
@@ -92,7 +94,7 @@ class Reproductor():
 				#self.is_radio = is_radio # De lo contrario no funciona "mantener_reproduccion"
 		
 		self.player.open(self.fuentededatos)
-		self.idlefunction = gobject.idle_add(self.idle_function)# Permite la reproducción
+		self.idlefunction = GObject.idle_add(self.idle_function)# Permite la reproducción
 		self.player.start()
 		self.estado = "reproduciendo"
 		self.barradereproduccion.actualizarimagenes(None, "reproduciendo")
@@ -184,7 +186,7 @@ class Reproductor():
 			self.on_stop_usuario = True
 
 		if self.idlefunction:
-			gobject.source_remove(self.idlefunction)
+			GObject.source_remove(self.idlefunction)
 
 		#self.is_radio = False
 		self.player.stop()
@@ -200,7 +202,7 @@ class Reproductor():
 		if self.estado == "pausado":
 			#self.estado = "reproduciendo"
 			self.barradereproduccion.actualizarimagenes(None, "reproduciendo")
-			self.idlefunction = gobject.idle_add(self.idle_function)
+			self.idlefunction = GObject.idle_add(self.idle_function)
 			self.player.start()
 		elif self.estado == "reproduciendo":
 			#self.estado = "pausado"
@@ -216,7 +218,7 @@ class Reproductor():
 hxplay.init()
 
 def main():
-   gtk.main()
+   Gtk.main()
    return 0
 
 if __name__=="__main__":

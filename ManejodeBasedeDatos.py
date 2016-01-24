@@ -233,7 +233,7 @@ class ManejodeBasedeDatos():
 
 
 def main():
-   gtk.main()
+   Gtk.main()
    return 0
 
 if __name__=="__main__":

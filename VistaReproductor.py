@@ -19,18 +19,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import gtk
-import pygtk
-pygtk.require("2.0")
+from gi.repository import Gtk
+from gi.repository import Gdk
+from gi.repository import Pango
 
 from Reproductor import Reproductor
 from BarradeReproduccion import BarradeReproduccion
 from Radio import Radio
 import os
 import shutil
-import pango
 
-from sugar.activity import activity
+from sugar3.activity import activity
 from ManejodeBasedeDatos import ManejodeBasedeDatos
 
 # Directorio para crear la base de datos
@@ -51,17 +50,17 @@ if not os.path.exists(mi_base):
 
 
 
-class VistaReproductor(gtk.Table):
+class VistaReproductor(Gtk.Table):
 
     def __init__(self):
 	
-        gtk.Table.__init__(self, 10, 30, False)
+        Gtk.Table.__init__(self, 10, 30, False)
 
 	# para los archivos mp3 - wav - ogg
-	self.treeview = gtk.TreeView()
-	self.liststore = gtk.ListStore(str)
+	self.treeview = Gtk.TreeView()
+	self.liststore = Gtk.ListStore(str)
 	self.treeselection = self.treeview.get_selection()
-	self.treeselection.set_mode(gtk.SELECTION_SINGLE)
+	self.treeselection.set_mode(Gtk.SelectionMode.SINGLE)
 
 	self.directorio_de_reproduccion = None # el directorio desde donde se cargaron los archivos
 	self.indice_archivo_en_reproduccion = 0 # para mantener una lista de reproduccion con los archivos
@@ -76,15 +75,15 @@ class VistaReproductor(gtk.Table):
         self.fuentededatosparareproducir = None
 
 	self.directoriodeiconos = os.getcwd() + "/Iconos/"
-	self.rosado = gtk.gdk.Color(65000,13000,25000,1)
-	self.celeste1 = gtk.gdk.Color(0,33000,33000,1)
+	self.rosado = Gdk.Color(65000,13000,25000)
+	self.celeste1 = Gdk.Color(0,33000,33000)
 
 	# ******************** Interface Grafica *****************************
 	# Zona Central.
 	# Definicion de radios online
-	viewportderadios = gtk.ScrolledWindow()
-	viewportderadios.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-	self.caja_radios = gtk.VBox()
+	viewportderadios = Gtk.ScrolledWindow()
+	viewportderadios.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+	self.caja_radios = Gtk.VBox()
 
 	self.cargar_radios()
 
@@ -92,8 +91,8 @@ class VistaReproductor(gtk.Table):
 	self.attach(viewportderadios, 0, 8, 0, 29)
 
 	# Barra vertical derecha para la lista de reproduccion
-        self.viewportderecho = gtk.ScrolledWindow()
-        self.viewportderecho.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.viewportderecho = Gtk.ScrolledWindow()
+        self.viewportderecho.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.attach(self.viewportderecho, 8, 10, 0, 29)
 	# Informacion adicional de la actividad
 	self.viewportderecho.add_with_viewport(self.crear_barra_info())
@@ -157,12 +156,12 @@ class VistaReproductor(gtk.Table):
 
     def crear_menu_emergente_para_radios(self, widget, boton, pos, tiempo):
 	# un menu para agregar o eliminar radios de la base de datos
-	menu = gtk.Menu()
+	menu = Gtk.Menu()
 
 	# Items del menu
-	agregar = gtk.MenuItem("Agregar nueva Radio . . .")
-	eliminar = gtk.MenuItem("Eliminar de la lista")
-	eliminar2 = gtk.MenuItem("Eliminar definitivamente")
+	agregar = Gtk.MenuItem("Agregar nueva Radio . . .")
+	eliminar = Gtk.MenuItem("Eliminar de la lista")
+	eliminar2 = Gtk.MenuItem("Eliminar definitivamente")
 
 	# Agregar los items al menu
 	menu.append(agregar)
@@ -184,35 +183,35 @@ class VistaReproductor(gtk.Table):
     def construir_dialogo_agregar_radio(self, widget):
 	# Crea un cuadro de dialogo para ingresar los datos de una nueva radio
 
-	dialog = gtk.Dialog("Agregar Radio", None, gtk.DIALOG_MODAL, None)
+	dialog = Gtk.Dialog("Agregar Radio", None, Gtk.DialogFlags.MODAL, None)
 
-	etiqueta0 = gtk.Label("No utilices tildes ni ñ en los datos.")
+	etiqueta0 = Gtk.Label("No utilices tildes ni ñ en los datos.")
 	dialog.vbox.pack_start(etiqueta0, True, True, 5)
 
-	renglo1 = gtk.HBox()
-	etiqueta1 = gtk.Label("Nombre de la Radio: ")
-	texto1 = gtk.Entry()
+	renglo1 = Gtk.HBox()
+	etiqueta1 = Gtk.Label("Nombre de la Radio: ")
+	texto1 = Gtk.Entry()
 	renglo1.pack_start(etiqueta1, True, True, 5)
 	renglo1.pack_start(texto1, True, True, 5)
 	dialog.vbox.pack_start(renglo1, True, True, 5)
 
-	renglo2 = gtk.HBox()
-	etiqueta2 = gtk.Label("Direccion de Reproduccion: ")
-	texto2 = gtk.Entry()
+	renglo2 = Gtk.HBox()
+	etiqueta2 = Gtk.Label("Direccion de Reproduccion: ")
+	texto2 = Gtk.Entry()
 	renglo2.pack_start(etiqueta2, True, True, 5)
 	renglo2.pack_start(texto2, True, True, 5)
 	dialog.vbox.pack_start(renglo2, True, True, 5)
 
-	renglo3 = gtk.HBox()
-	etiqueta3 = gtk.Label("Descripcion: ")
-	texto3 = gtk.Entry()
+	renglo3 = Gtk.HBox()
+	etiqueta3 = Gtk.Label("Descripcion: ")
+	texto3 = Gtk.Entry()
 	renglo3.pack_start(etiqueta3, True, True, 5)
 	renglo3.pack_start(texto3, True, True, 5)
 	dialog.vbox.pack_start(renglo3, True, True, 5)
 
-	renglo4 = gtk.HBox()
-	etiqueta4 = gtk.Label("Pais de procedencia: ")
-	texto4 = gtk.Entry()
+	renglo4 = Gtk.HBox()
+	etiqueta4 = Gtk.Label("Pais de procedencia: ")
+	texto4 = Gtk.Entry()
 	renglo4.pack_start(etiqueta4, True, True, 5)
 	renglo4.pack_start(texto4, True, True, 5)
 	dialog.vbox.pack_start(renglo4, True, True, 5)
@@ -253,19 +252,19 @@ class VistaReproductor(gtk.Table):
 
     def crear_barra_info(self):
 	# Informacion
-	self.barra_ceibal_radio_info = gtk.VBox()
-	imagen1 = gtk.Image()
+	self.barra_ceibal_radio_info = Gtk.VBox()
+	imagen1 = Gtk.Image()
 	imagen1.set_from_file(self.directoriodeiconos + "Flavio.png")
 
-	etiquetadeinformacion1 = gtk.Label("Ceibal Radio" + "\n" + "fdanesse@hotmail.com" + "\n" + "http://sites.google.com/" + "\n" + "site/sugaractivities/home")
-	etiquetadeinformacion1.modify_font(pango.FontDescription("purisa 4"))
-	etiquetadeinformacion1.set_justify(gtk.JUSTIFY_CENTER)
+	etiquetadeinformacion1 = Gtk.Label("Ceibal Radio" + "\n" + "fdanesse@hotmail.com" + "\n" + "http://sites.google.com/" + "\n" + "site/sugaractivities/home")
+	etiquetadeinformacion1.modify_font(Pango.FontDescription("purisa 4"))
+	etiquetadeinformacion1.set_justify(Gtk.Justification.CENTER)
 
-	etiquetadeinformacion2 = gtk.Label("http://drupal.ceibaljam.org/"  + "\n" + "webmaster@ceibaljam.org")
-	etiquetadeinformacion2.modify_font(pango.FontDescription("purisa 4"))
-	etiquetadeinformacion2.set_justify(gtk.JUSTIFY_CENTER)
+	etiquetadeinformacion2 = Gtk.Label("http://drupal.ceibaljam.org/"  + "\n" + "webmaster@ceibaljam.org")
+	etiquetadeinformacion2.modify_font(Pango.FontDescription("purisa 4"))
+	etiquetadeinformacion2.set_justify(Gtk.Justification.CENTER)
 
-	imagen2 = gtk.Image()
+	imagen2 = Gtk.Image()
 	imagen2.set_from_file(self.directoriodeiconos + "ceibaljam.png")
 
 	self.barra_ceibal_radio_info.pack_start(imagen2, True, True, 5)
@@ -285,17 +284,17 @@ class VistaReproductor(gtk.Table):
 
     def abrirdirectoriomp3(self,widget):
 	# Abre un Filechooser para cargar un directorio con archivos mp3 - wav - ogg
-	selectordedirectorio = gtk.FileChooserDialog("Abrir directorio MP3", None, gtk.FILE_CHOOSER_ACTION_OPEN, None)
+	selectordedirectorio = Gtk.FileChooserDialog("Abrir directorio MP3", None, Gtk.FileChooserAction.OPEN, None)
 	selectordedirectorio.set_current_folder_uri("file:///media")
 	selectordedirectorio.set_select_multiple(True)
 
 	# extras
-	frame = gtk.Frame()
-	hbox = gtk.HBox()
+	frame = Gtk.Frame()
+	hbox = Gtk.HBox()
 	frame.add(hbox)
-	botonabrirdirectorio = gtk.Button("Abrir")
-	botonseleccionartodo = gtk.Button("Seleccionar Todos")
-	botonsalir = gtk.Button("Salir")
+	botonabrirdirectorio = Gtk.Button("Abrir")
+	botonseleccionartodo = Gtk.Button("Seleccionar Todos")
+	botonsalir = Gtk.Button("Salir")
 	hbox.pack_end(botonsalir, False, False, 5)
 	hbox.pack_end(botonseleccionartodo, False, False, 5)
 	hbox.pack_end(botonabrirdirectorio, False, False, 5)
@@ -306,7 +305,7 @@ class VistaReproductor(gtk.Table):
 	botonseleccionartodo.connect("clicked",self.seleccionartodo,selectordedirectorio)
 
 	# filtro Musica
-	filter = gtk.FileFilter()
+	filter = Gtk.FileFilter()
 	filter.set_name("Musica")
 	filter.add_mime_type("sound/mp3")
 	filter.add_mime_type("sound/ogg")
@@ -333,7 +332,7 @@ class VistaReproductor(gtk.Table):
 
     def cargardirectorio(self, listadereproduccion):
 
-	self.liststore = gtk.ListStore(str)
+	self.liststore = Gtk.ListStore(str)
         for archivo in listadereproduccion:
 	    if os.path.isfile(archivo):
 		nombre_de_archivo = os.path.basename(archivo)
@@ -346,10 +345,10 @@ class VistaReproductor(gtk.Table):
 		# el directorio de reproduccion
 		self.directorio_de_reproduccion = os.path.dirname(listadereproduccion[0])
 
-		self.treeview = gtk.TreeView()
+		self.treeview = Gtk.TreeView()
 		self.treeview.connect("row-activated", self.open_file)
 		self.treeview.set_model(self.liststore)
-		self.treeview.append_column(gtk.TreeViewColumn('Mi música', gtk.CellRendererText(), text=0))
+		self.treeview.append_column(Gtk.TreeViewColumn('Mi música', Gtk.CellRendererText(), text=0))
 		self.viewportderecho.add_with_viewport(self.treeview)
 
 		self.viewportderecho.show_all()
@@ -358,7 +357,7 @@ class VistaReproductor(gtk.Table):
 		self.indice_archivo_en_reproduccion = 0
 		self.open_file(self.treeview, self.indice_archivo_en_reproduccion, 0)
 		self.treeselection = self.treeview.get_selection()
-		self.treeselection.set_mode(gtk.SELECTION_SINGLE)
+		self.treeselection.set_mode(Gtk.SelectionMode.SINGLE)
 		self.treeselection.select_path(self.indice_archivo_en_reproduccion)
 
     def siguiente_tema(self, widget):
@@ -366,7 +365,7 @@ class VistaReproductor(gtk.Table):
 		self.indice_archivo_en_reproduccion += 1
 		self.open_file(self.treeview, self.indice_archivo_en_reproduccion, 0)
 		self.treeselection = self.treeview.get_selection()
-		self.treeselection.set_mode(gtk.SELECTION_SINGLE)
+		self.treeselection.set_mode(Gtk.SelectionMode.SINGLE)
 		self.treeselection.select_path(self.indice_archivo_en_reproduccion)
 
     def tema_anterior(self, widget):
@@ -374,7 +373,7 @@ class VistaReproductor(gtk.Table):
 		self.indice_archivo_en_reproduccion -= 1
 		self.open_file(self.treeview, self.indice_archivo_en_reproduccion, 0)
 		self.treeselection = self.treeview.get_selection()
-		self.treeselection.set_mode(gtk.SELECTION_SINGLE)
+		self.treeselection.set_mode(Gtk.SelectionMode.SINGLE)
 		self.treeselection.select_path(self.indice_archivo_en_reproduccion)
 	
     def open_file(self, treeview, path, column):

@@ -19,18 +19,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import gtk
-import pygtk
-pygtk.require("2.0")
+from gi.repository import Gtk
+from gi.repository import Gdk
+from gi.repository import GdkPixbuf
+from gi.repository import Pango
 
-import pango
-
-class Radio(gtk.Button):
+class Radio(Gtk.Button):
 
 	def __init__(self, datos_radio, directoriodeimagenes):
 		# datos_radio es una tupla
 
-		celeste1 = gtk.gdk.Color(0,33000,33000,1)
+		celeste1 = Gdk.Color(0,33000,33000)
 
 		self.id_en_base = datos_radio[0]
 		nombrederadio = datos_radio[1]
@@ -39,17 +38,17 @@ class Radio(gtk.Button):
 		pais = datos_radio[4]
 
 		# Botón
-		gtk.Button.__init__(self)
-		self.modify_bg(gtk.STATE_NORMAL, celeste1)
+		Gtk.Button.__init__(self)
+		self.modify_bg(Gtk.StateType.NORMAL, celeste1)
 
 		self.direccionderadio = direccionderadio
 
 		bandera = None
 		# Imagen Bandera
-		bandera_radio = gtk.Image()
+		bandera_radio = Gtk.Image()
 		try:
 			bandera = directoriodeimagenes + pais + ".png"
-			pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(bandera,60,60)
+			pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(bandera,60,60)
 			bandera_radio.set_from_pixbuf(pixbuf)
 		except Exception, e:
 			print e
@@ -59,17 +58,17 @@ class Radio(gtk.Button):
 		Informacion = (nombrederadio + "\n" + "Reproducción: " + direccionderadio + "\n" + "Detalle: " + anotaciones)
 
 		# Etiqueta de Información
-		self.etiquetadeinformacion = gtk.Label(Informacion)
-		self.etiquetadeinformacion.modify_font(pango.FontDescription("purisa 6"))
-		self.etiquetadeinformacion.modify_bg(gtk.STATE_NORMAL, celeste1)
+		self.etiquetadeinformacion = Gtk.Label(Informacion)
+		self.etiquetadeinformacion.modify_font(Pango.FontDescription("purisa 6"))
+		self.etiquetadeinformacion.modify_bg(Gtk.StateType.NORMAL, celeste1)
 
 		# Imagen "radio"
-		imagenderadio = gtk.Image()
-		pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(directoriodeimagenes + "radio.png",120,120)
+		imagenderadio = Gtk.Image()
+		pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(directoriodeimagenes + "radio.png",120,120)
 		imagenderadio.set_from_pixbuf(pixbuf)
 
 		# Caja contenedora del boton
-		caja_principal = gtk.HBox()
+		caja_principal = Gtk.HBox()
 
 		# ***** Armado de Interfaz *****
 		caja_principal.pack_start(imagenderadio, False, False,5)
@@ -79,6 +78,6 @@ class Radio(gtk.Button):
 		self.show_all()
 
 	def pintame(self, color):
-		self.modify_bg(gtk.STATE_NORMAL, color)
-		self.etiquetadeinformacion.modify_bg(gtk.STATE_NORMAL, color)
+		self.modify_bg(Gtk.StateType.NORMAL, color)
+		self.etiquetadeinformacion.modify_bg(Gtk.StateType.NORMAL, color)
 		
